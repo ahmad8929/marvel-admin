@@ -1,0 +1,27 @@
+# SPA fallback for admin.marvelsonline.in on Hostinger (Apache/LiteSpeed).
+# Copied into dist/ by the Vite build.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# Long-cache hashed assets
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css|woff2|png|jpg|jpeg|svg|webp)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
+
+# Keep the admin out of search indexes
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow"
+</IfModule>
+
+# Optional: restrict access to office IPs — uncomment and edit.
+# <RequireAll>
+#   Require ip 203.0.113.0/24
+# </RequireAll>
