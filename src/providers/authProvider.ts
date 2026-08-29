@@ -1,15 +1,13 @@
 import type { AuthProvider } from "@refinedev/core";
 import { config } from "../config";
 
-/**
- * Phase 0 stub. Phase 5 replaces this with the real flow against marvels-api:
- *   POST /auth/login  -> access token (memory) + refresh cookie (Domain=.marvelsonline.in)
- *   POST /auth/refresh on 401, GET /auth/me for identity, role gate ADMIN | STAFF.
- */
 const TOKEN_KEY = "marvels.admin.token";
+const USER_KEY = "marvels.admin.user";
+
+type Identity = { id: string; name: string; email: string; role: string };
 
 export const authProvider: AuthProvider = {
-  async login({ email, password }) {
+  login: async ({ email, password }) => {
     try {
       const res = await fetch(`${config.apiUrl}/auth/login`, {
         method: "POST",
@@ -18,10 +16,20 @@ export const authProvider: AuthProvider = {
         body: JSON.stringify({ email, password }),
       });
       if (!res.ok) {
-        return { success: false, error: { name: "Login failed", message: "Invalid credentials" } };
+        return {
+          success: false,
+          error: { name: "Login failed", message: "Invalid email or password" },
+        };
       }
-      const data = (await res.json()) as { accessToken?: string };
-      if (data.accessToken) localStorage.setItem(TOKEN_KEY, data.accessToken);
+      const data = (await res.json()) as { accessToken: string; user: Identity };
+      if (!["ADMIN", "STAFF"].includes(data.user.role)) {
+        return {
+          success: false,
+          error: { name: "Forbidden", message: "This account is not a staff account" },
+        };
+      }
+      localStorage.setItem(TOKEN_KEY, data.accessToken);
+      localStorage.setItem(USER_KEY, JSON.stringify(data.user));
       return { success: true, redirectTo: "/" };
     } catch {
       return {
@@ -31,24 +39,43 @@ export const authProvider: AuthProvider = {
     }
   },
 
-  async logout() {
+  logout: async () => {
+    await fetch(`${config.apiUrl}/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+    }).catch(() => undefined);
     localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
     return { success: true, redirectTo: "/login" };
   },
 
-  async check() {
-    return localStorage.getItem(TOKEN_KEY)
-      ? { authenticated: true }
-      : { authenticated: false, redirectTo: "/login" };
+  check: async () => {
+    if (localStorage.getItem(TOKEN_KEY)) return { authenticated: true };
+    // Try a silent refresh from the cookie.
+    const r = await fetch(`${config.apiUrl}/auth/refresh`, {
+      method: "POST",
+      credentials: "include",
+    }).catch(() => null);
+    if (r?.ok) {
+      const data = (await r.json()) as { accessToken: string; user: Identity };
+      if (["ADMIN", "STAFF"].includes(data.user.role)) {
+        localStorage.setItem(TOKEN_KEY, data.accessToken);
+        localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+        return { authenticated: true };
+      }
+    }
+    return { authenticated: false, redirectTo: "/login" };
   },
 
-  async getIdentity() {
-    const token = localStorage.getItem(TOKEN_KEY);
-    if (!token) return null;
-    return { id: "me", name: "Store admin" };
+  getPermissions: async () => {
+    const raw = localStorage.getItem(USER_KEY);
+    return raw ? (JSON.parse(raw) as Identity).role : null;
   },
 
-  async onError(error) {
-    return { error };
+  getIdentity: async () => {
+    const raw = localStorage.getItem(USER_KEY);
+    return raw ? (JSON.parse(raw) as Identity) : null;
   },
+
+  onError: async (error) => ({ error }),
 };
