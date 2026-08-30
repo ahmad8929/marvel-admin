@@ -69,7 +69,9 @@ export const dataProvider: DataProvider = {
   },
 
   getOne: async ({ resource, id }) => {
-    const data = await json<Record<string, unknown>>(await http(`/${resource}/${id}`));
+    // `settings` is a singleton — GET /admin/settings, no id segment.
+    const path = resource === "settings" ? `/${resource}` : `/${resource}/${id}`;
+    const data = await json<Record<string, unknown>>(await http(path));
     return { data: data as never };
   },
 
