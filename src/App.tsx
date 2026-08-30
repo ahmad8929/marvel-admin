@@ -26,6 +26,7 @@ import { App as AntdApp, ConfigProvider } from "antd";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router";
 
 import { antdTheme } from "./theme";
+import { config } from "./config";
 import { dataProvider } from "./providers/dataProvider";
 import { authProvider } from "./providers/authProvider";
 import { Title } from "./components/Title";
@@ -49,9 +50,29 @@ import {
 } from "./pages/content";
 import { SettingsPage } from "./pages/settings";
 
+function MisconfigBanner() {
+  if (!config.misconfigured) return null;
+  return (
+    <div
+      style={{
+        background: "#B3261E",
+        color: "#fff",
+        padding: "10px 16px",
+        fontSize: 13,
+        textAlign: "center",
+      }}
+    >
+      This build has no API URL. Set <code>VITE_API_URL</code> in Vercel →
+      Settings → Environment Variables to <code>https://&lt;your-api&gt;/api/v1</code>
+      and redeploy.
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <BrowserRouter>
+      <MisconfigBanner />
       <ConfigProvider theme={antdTheme}>
         <AntdApp>
           <Refine
