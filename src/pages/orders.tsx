@@ -82,6 +82,8 @@ export function OrderShow() {
         discount: number;
         shippingFee: number;
         codFee: number;
+        platformFee: number;
+        handlingFee: number;
         total: number;
         couponCode?: string;
         trackingCarrier?: string;
@@ -185,6 +187,12 @@ export function OrderShow() {
           </Descriptions.Item>
         )}
         <Descriptions.Item label="Shipping">{inr(order.shippingFee)}</Descriptions.Item>
+        {order.platformFee > 0 && (
+          <Descriptions.Item label="Platform fee">{inr(order.platformFee)}</Descriptions.Item>
+        )}
+        {order.handlingFee > 0 && (
+          <Descriptions.Item label="Handling / misc">{inr(order.handlingFee)}</Descriptions.Item>
+        )}
         {order.codFee > 0 && (
           <Descriptions.Item label="COD fee">{inr(order.codFee)}</Descriptions.Item>
         )}

@@ -45,6 +45,27 @@ export function SettingsPage() {
           </Form.Item>
         </Space>
 
+        <Typography.Title level={5} style={{ marginTop: 8 }}>
+          Order charges (paise · 100 paise = ₹1)
+        </Typography.Title>
+        <Space size="large" wrap>
+          <Form.Item label="Platform fee label" name="platformFeeLabel">
+            <Input placeholder="Platform fee" />
+          </Form.Item>
+          <Form.Item label="Platform fee (paise)" name="platformFee">
+            <InputNumber min={0} />
+          </Form.Item>
+          <Form.Item label="Handling / misc label" name="handlingFeeLabel">
+            <Input placeholder="Handling charges" />
+          </Form.Item>
+          <Form.Item label="Handling / misc fee (paise)" name="handlingFee">
+            <InputNumber min={0} />
+          </Form.Item>
+        </Space>
+        <Form.Item label="Tax note (shown under the total)" name="taxNote">
+          <Input placeholder="Prices are inclusive of all taxes" />
+        </Form.Item>
+
         <Space size="large" wrap>
           <Form.Item label="Support email" name="supportEmail">
             <Input />
