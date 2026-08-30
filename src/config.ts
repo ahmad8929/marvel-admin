@@ -16,7 +16,10 @@ const apiUrl = raw || "http://localhost:3001/api/v1";
 export const config = {
   apiUrl,
   adminApiUrl: apiUrl + "/admin",
-  mediaUrl: import.meta.env.VITE_MEDIA_URL ?? "https://media.marvelsonline.in",
+  // Only used for building preview URLs; the API returns absolute media URLs anyway.
+  mediaUrl:
+    import.meta.env.VITE_MEDIA_URL ??
+    "https://orangered-badger-607568.hostingersite.com/media",
   /** true when the build shipped without a real API URL */
   misconfigured:
     import.meta.env.PROD && (!raw || raw.startsWith("http://localhost")),
