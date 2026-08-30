@@ -18,8 +18,7 @@ export const config = {
   adminApiUrl: apiUrl + "/admin",
   // Only used for building preview URLs; the API returns absolute media URLs anyway.
   mediaUrl:
-    import.meta.env.VITE_MEDIA_URL ??
-    "https://orangered-badger-607568.hostingersite.com/media",
+    import.meta.env.VITE_MEDIA_URL ?? "https://api.marvelsazamgarh.in/media",
   /** true when the build shipped without a real API URL */
   misconfigured:
     import.meta.env.PROD && (!raw || raw.startsWith("http://localhost")),

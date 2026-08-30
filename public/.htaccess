@@ -1,4 +1,4 @@
-# SPA fallback for admin.marvelsonline.in on Hostinger (Apache/LiteSpeed).
+# SPA fallback for admin.marvelsazamgarh.in on Hostinger (Apache/LiteSpeed).
 # Copied into dist/ by the Vite build.
 <IfModule mod_rewrite.c>
   RewriteEngine On

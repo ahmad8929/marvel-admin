@@ -3,7 +3,7 @@
 Staff admin panel for **Marvel's Online Clothings**.
 Vite · React 19 · TypeScript · **Refine** · **Ant Design**.
 
-Static SPA — built and deployed to the Hostinger `admin.marvelsonline.in` subdomain.
+Static SPA — built and deployed to the Hostinger `admin.marvelsazamgarh.in` subdomain.
 Consumes `marvels-api` at `VITE_API_URL` (`/api/v1/admin/*`).
 Full spec: [`../docs/BUILD_BRIEF.md`](../docs/BUILD_BRIEF.md).
 
@@ -37,7 +37,7 @@ src/
 
 ## Deployment
 
-`npm run build` → upload `dist/` to the `admin.marvelsonline.in` docroot.
+`npm run build` → upload `dist/` to the `admin.marvelsazamgarh.in` docroot.
 Add an `.htaccess` SPA fallback (rewrite non-file requests to `/index.html`) and,
 optionally, an IP allow-list.
 
